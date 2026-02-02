@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste de SEO - Venturi Solutions</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #f5f5f5;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid rgba(139, 21, 56, 0.3);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      color: #8B1538;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #999;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .input-group {
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(139, 21, 56, 0.5);
+      border-radius: 6px;
+      color: #f5f5f5;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #8B1538;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 21, 56, 0.4);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .results {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .results.show {
+      display: block;
+    }
+
+    .test-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-name {
+      font-weight: 500;
+      color: #f5f5f5;
+    }
+
+    .test-status {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .test-status.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .test-status.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .test-status.loading {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .summary {
+      background: rgba(139, 21, 56, 0.1);
+      border: 2px solid #8B1538;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .summary h2 {
+      color: #8B1538;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .summary .score {
+      font-size: 48px;
+      font-weight: bold;
+      color: #f5f5f5;
+      margin: 10px 0;
+    }
+
+    .urls {
+      margin-top: 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .urls h3 {
+      color: #8B1538;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .url-item {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .url-label {
+      color: #999;
+      min-width: 100px;
+      font-size: 14px;
+    }
+
+    .url-link {
+      color: #8B1538;
+      text-decoration: none;
+      word-break: break-all;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .url-link:hover {
+      color: #A31D45;
+      text-decoration: underline;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(251, 191, 36, 0.3);
+      border-radius: 50%;
+      border-top-color: #fbbf24;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .next-steps {
+      margin-top: 30px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .next-steps h3 {
+      color: #22c55e;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .next-steps ol {
+      margin-left: 20px;
+      color: #ccc;
+      line-height: 1.8;
+    }
+
+    .next-steps a {
+      color: #22c55e;
+      text-decoration: none;
+    }
+
+    .next-steps a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Teste de SEO Backend</h1>
+    <p class="subtitle">Verifique se a infraestrutura de SEO está funcionando corretamente</p>
+
+    <div class="input-group">
+      <label for="projectId">
+        Supabase Project ID
+        <span style="color: #999; font-size: 12px;">(encontre em utils/supabase/info.tsx)</span>
+      </label>
+      <input 
+        type="text" 
+        id="projectId" 
+        placeholder="ex: abcdefghijklmnop"
+        autocomplete="off"
+      >
+    </div>
+
+    <button id="testButton" onclick="runTests()">
+      Testar Infraestrutura
+    </button>
+
+    <div id="results" class="results">
+      <div id="summary" class="summary">
+        <h2>Resultado</h2>
+        <div class="score" id="score">0/6</div>
+        <p id="scoreText">Testes em execução...</p>
+      </div>
+
+      <div id="testItems"></div>
+
+      <div id="urls" class="urls">
+        <h3>📍 URLs Importantes</h3>
+        <div class="url-item">
+          <span class="url-label">Sitemap:</span>
+          <a id="sitemapUrl" class="url-link" href="#" target="_blank"></a>
+        </div>
+        <div class="url-item">
+          <span class="url-label">Robots:</span>
+          <a id="robotsUrl" class="url-link" href="#" target="_blank"></a>
+        </div>
+        <div class="url-item">
+          <span class="url-label">Schema:</span>
+          <a id="schemaUrl" class="url-link" href="#" target="_blank"></a>
+        </div>
+        <div class="url-item">
+          <span class="url-label">Health:</span>
+          <a id="healthUrl" class="url-link" href="#" target="_blank"></a>
+        </div>
+      </div>
+
+      <div id="nextSteps" class="next-steps" style="display: none;">
+        <h3>✅ Próximos Passos</h3>
+        <ol>
+          <li>Acesse <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a></li>
+          <li>Adicione sua propriedade (URL do site)</li>
+          <li>Verifique a propriedade (tag HTML no <head>)</li>
+          <li>Submeta o sitemap (URL acima)</li>
+          <li>Aguarde 24-48h para indexação inicial</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tests = [
+      {
+        name: 'Health Check',
+        path: '/health',
+        type: 'json'
+      },
+      {
+        name: 'Sitemap XML',
+        path: '/sitemap.xml',
+        type: 'xml'
+      },
+      {
+        name: 'Robots.txt',
+        path: '/robots.txt',
+        type: 'text'
+      },
+      {
+        name: 'Organization Schema',
+        path: '/schema/organization',
+        type: 'json'
+      },
+      {
+        name: 'Cache GET',
+        path: '/cache/test',
+        type: 'json',
+        acceptStatus: [200, 404] // 404 é OK se não há cache
+      },
+      {
+        name: 'Analytics POST',
+        path: '/analytics/pageview',
+        type: 'json',
+        method: 'POST',
+        body: {
+          page: '/test',
+          referrer: 'test',
+          userAgent: 'test',
+          timestamp: new Date().toISOString()
+        }
+      }
+    ];
+
+    async function runTests() {
+      const projectId = document.getElementById('projectId').value.trim();
+      
+      if (!projectId) {
+        alert('Por favor, digite o Project ID');
+        return;
+      }
+
+      const button = document.getElementById('testButton');
+      button.disabled = true;
+      button.textContent = 'Testando...';
+
+      const results = document.getElementById('results');
+      results.classList.add('show');
+
+      const testItems = document.getElementById('testItems');
+      testItems.innerHTML = '';
+
+      const baseUrl = `https://${projectId}.supabase.co/functions/v1/make-server-26a83c87`;
+
+      // Update URLs
+      document.getElementById('sitemapUrl').href = `${baseUrl}/sitemap.xml`;
+      document.getElementById('sitemapUrl').textContent = `${baseUrl}/sitemap.xml`;
+      document.getElementById('robotsUrl').href = `${baseUrl}/robots.txt`;
+      document.getElementById('robotsUrl').textContent = `${baseUrl}/robots.txt`;
+      document.getElementById('schemaUrl').href = `${baseUrl}/schema/organization`;
+      document.getElementById('schemaUrl').textContent = `${baseUrl}/schema/organization`;
+      document.getElementById('healthUrl').href = `${baseUrl}/health`;
+      document.getElementById('healthUrl').textContent = `${baseUrl}/health`;
+
+      let successCount = 0;
+
+      for (const test of tests) {
+        const testDiv = document.createElement('div');
+        testDiv.className = 'test-item';
+        testDiv.innerHTML = `
+          <span class="test-name">${test.name}</span>
+          <span class="test-status loading">
+            <span class="spinner"></span> Testando...
+          </span>
+        `;
+        testItems.appendChild(testDiv);
+
+        const statusSpan = testDiv.querySelector('.test-status');
+
+        try {
+          const url = `${baseUrl}${test.path}`;
+          const options = {
+            method: test.method || 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          };
+
+          if (test.body) {
+            options.body = JSON.stringify(test.body);
+          }
+
+          const response = await fetch(url, options);
+          const acceptableStatus = test.acceptStatus || [200];
+          
+          if (acceptableStatus.includes(response.status)) {
+            statusSpan.className = 'test-status success';
+            statusSpan.textContent = `✅ OK (${response.status})`;
+            successCount++;
+          } else {
+            statusSpan.className = 'test-status error';
+            statusSpan.textContent = `❌ Erro (${response.status})`;
+          }
+        } catch (error) {
+          statusSpan.className = 'test-status error';
+          statusSpan.textContent = `❌ Erro (${error.message})`;
+        }
+      }
+
+      // Update summary
+      const score = document.getElementById('score');
+      const scoreText = document.getElementById('scoreText');
+      score.textContent = `${successCount}/${tests.length}`;
+
+      if (successCount === tests.length) {
+        scoreText.textContent = '🎉 Todos os testes passaram! Backend 100% funcional.';
+        scoreText.style.color = '#22c55e';
+        document.getElementById('nextSteps').style.display = 'block';
+      } else {
+        scoreText.textContent = `⚠️ ${tests.length - successCount} teste(s) falharam. Verifique o backend.`;
+        scoreText.style.color = '#fbbf24';
+      }
+
+      button.disabled = false;
+      button.textContent = 'Testar Novamente';
+    }
+
+    // Auto-detect project ID on load
+    window.addEventListener('load', () => {
+      // Try to get from localStorage if previously entered
+      const savedProjectId = localStorage.getItem('venturi_project_id');
+      if (savedProjectId) {
+        document.getElementById('projectId').value = savedProjectId;
+      }
+    });
+
+    // Save project ID on input
+    document.getElementById('projectId').addEventListener('input', (e) => {
+      localStorage.setItem('venturi_project_id', e.target.value);
+    });
+  </script>
+</body>
+</html>
